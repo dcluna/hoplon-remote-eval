@@ -1,0 +1,22 @@
+(page "index.html"
+  (:require
+    [remote-eval.rpc :as rpc]
+    [tailrecursion.hoplon.reload :refer [reload-all]]))
+
+(reload-all 1000)
+
+(rpc/init)
+
+(defc code "empty")
+
+(html
+ (head)
+ (body
+  (input
+   :id "code"
+   :type "text"
+   :on-change #(do (reset! code (val-id "code"))
+                   (print (str "Code is: " (val-id "code")))
+                   (rpc/set-code! (val-id "code"))
+                   (rpc/eval-code (val-id "code"))))
+  (h1 (text "Backend evaluation yielded: ~{rpc/evaluated-code}"))))
